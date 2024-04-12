@@ -13,17 +13,14 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="libdshowcapture">
+      <UniqueIdentifier>{fff345d9-cf98-4491-a592-dd7d41b83d80}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="libdshowcapture-external">
+      <UniqueIdentifier>{c2a38a4f-b325-409c-9219-cbcaf3910e9c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="framework.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="targetver.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Resource.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="CameraView.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -35,6 +32,48 @@
     </ClInclude>
     <ClInclude Include="..\Common\GameTimer.h">
       <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="device.hpp">
+      <Filter>libdshowcapture</Filter>
+    </ClInclude>
+    <ClInclude Include="dshowcapture.hpp">
+      <Filter>libdshowcapture</Filter>
+    </ClInclude>
+    <ClInclude Include="ComPtr.hpp">
+      <Filter>libdshowcapture</Filter>
+    </ClInclude>
+    <ClInclude Include="CoTaskMemPtr.hpp">
+      <Filter>libdshowcapture</Filter>
+    </ClInclude>
+    <ClInclude Include="dshow-base.hpp">
+      <Filter>libdshowcapture</Filter>
+    </ClInclude>
+    <ClInclude Include="log.hpp">
+      <Filter>libdshowcapture</Filter>
+    </ClInclude>
+    <ClInclude Include="dshow-device-defs.hpp">
+      <Filter>libdshowcapture</Filter>
+    </ClInclude>
+    <ClInclude Include="dshow-enum.hpp">
+      <Filter>libdshowcapture</Filter>
+    </ClInclude>
+    <ClInclude Include="dshow-media-type.hpp">
+      <Filter>libdshowcapture</Filter>
+    </ClInclude>
+    <ClInclude Include="IVideoCaptureFilter.h">
+      <Filter>libdshowcapture</Filter>
+    </ClInclude>
+    <ClInclude Include="dshow-formats.hpp">
+      <Filter>libdshowcapture</Filter>
+    </ClInclude>
+    <ClInclude Include="capture-filter.hpp">
+      <Filter>libdshowcapture</Filter>
+    </ClInclude>
+    <ClInclude Include="dshow-demux.hpp">
+      <Filter>libdshowcapture</Filter>
+    </ClInclude>
+    <ClInclude Include="DriverInterface.h">
+      <Filter>libdshowcapture-external</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -50,18 +89,50 @@
     <ClCompile Include="..\Common\GameTimer.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="CameraView.rc">
-      <Filter>资源文件</Filter>
-    </ResourceCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="small.ico">
-      <Filter>资源文件</Filter>
-    </Image>
-    <Image Include="CameraView.ico">
-      <Filter>资源文件</Filter>
-    </Image>
+    <ClCompile Include="dshow-base.cpp">
+      <Filter>libdshowcapture</Filter>
+    </ClCompile>
+    <ClCompile Include="log.cpp">
+      <Filter>libdshowcapture</Filter>
+    </ClCompile>
+    <ClCompile Include="dshow-enum.cpp">
+      <Filter>libdshowcapture</Filter>
+    </ClCompile>
+    <ClCompile Include="dshow-media-type.cpp">
+      <Filter>libdshowcapture</Filter>
+    </ClCompile>
+    <ClCompile Include="dshow-formats.cpp">
+      <Filter>libdshowcapture</Filter>
+    </ClCompile>
+    <ClCompile Include="device.cpp">
+      <Filter>libdshowcapture</Filter>
+    </ClCompile>
+    <ClCompile Include="dshowcapture.cpp">
+      <Filter>libdshowcapture</Filter>
+    </ClCompile>
+    <ClCompile Include="capture-filter.cpp">
+      <Filter>libdshowcapture</Filter>
+    </ClCompile>
+    <ClCompile Include="dshow-demux.cpp">
+      <Filter>libdshowcapture</Filter>
+    </ClCompile>
+    <ClCompile Include="dshow-encoded-device.cpp">
+      <Filter>libdshowcapture</Filter>
+    </ClCompile>
+    <ClCompile Include="device-vendor.cpp">
+      <Filter>libdshowcapture</Filter>
+    </ClCompile>
+    <ClCompile Include="includes\capture-device-support\Library\EGAVResult.cpp">
+      <Filter>libdshowcapture-external</Filter>
+    </ClCompile>
+    <ClCompile Include="includes\capture-device-support\Library\ElgatoUVCDevice.cpp">
+      <Filter>libdshowcapture-external</Filter>
+    </ClCompile>
+    <ClCompile Include="includes\capture-device-support\Library\win\EGAVHIDImplementation.cpp">
+      <Filter>libdshowcapture-external</Filter>
+    </ClCompile>
+    <ClCompile Include="DriverInterface.cpp">
+      <Filter>libdshowcapture-external</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
