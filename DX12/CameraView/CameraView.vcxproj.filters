@@ -19,6 +19,9 @@
     <Filter Include="libdshowcapture-external">
       <UniqueIdentifier>{c2a38a4f-b325-409c-9219-cbcaf3910e9c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="shaders">
+      <UniqueIdentifier>{b795616a-4170-4aab-998e-7f7f7423cba1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CameraView.h">
@@ -74,6 +77,9 @@
     </ClInclude>
     <ClInclude Include="DriverInterface.h">
       <Filter>libdshowcapture-external</Filter>
+    </ClInclude>
+    <ClInclude Include="Triangle.h">
+      <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -134,5 +140,16 @@
     <ClCompile Include="DriverInterface.cpp">
       <Filter>libdshowcapture-external</Filter>
     </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Triangle.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="shader1.hlsl">
+      <Filter>shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>

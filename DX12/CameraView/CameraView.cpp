@@ -6,49 +6,10 @@
 //
 //***************************************************************************************
 
-#include "../Common/d3dApp.h"
 #include <DirectXColors.h>
 #include "CameraView.h"
 
 using namespace DirectX;
-
-class InitDirect3DApp : public D3DApp
-{
-public:
-	InitDirect3DApp(HINSTANCE hInstance);
-	~InitDirect3DApp();
-
-	virtual bool Initialize()override;
-
-private:
-	virtual void OnResize()override;
-	virtual void Update(const GameTimer& gt)override;
-	virtual void Draw(const GameTimer& gt)override;
-
-};
-
-int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance,
-	PSTR cmdLine, int showCmd)
-{
-	// Enable run-time memory check for debug builds.
-#if defined(DEBUG) | defined(_DEBUG)
-	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
-#endif
-
-	try
-	{
-		InitDirect3DApp theApp(hInstance);
-		if (!theApp.Initialize())
-			return 0;
-
-		return theApp.Run();
-	}
-	catch (DxException& e)
-	{
-		MessageBox(nullptr, e.ToString().c_str(), L"HR Failed", MB_OK);
-		return 0;
-	}
-}
 
 InitDirect3DApp::InitDirect3DApp(HINSTANCE hInstance)
 	: D3DApp(hInstance)
@@ -65,6 +26,12 @@ bool InitDirect3DApp::Initialize()
 		return false;
 
 	return true;
+}
+
+void InitDirect3DApp::DrawCamera(const VideoConfig& config, unsigned char* data,
+	size_t size, long long startTime, long long endTime,
+	long rotation) {
+	
 }
 
 void InitDirect3DApp::OnResize()
@@ -171,7 +138,7 @@ bool CCameraDevice::StartCamera()
 		return false;
 	}
 
-
+	return true;
 }
 
 bool CCameraDevice::UpdateVideoConfig(const SVideoConfig& videoConfig)
@@ -179,7 +146,7 @@ bool CCameraDevice::UpdateVideoConfig(const SVideoConfig& videoConfig)
 	DeviceId id;
 	if (!DecodeDeviceId(id, videoConfig.strVideoDeviceId.c_str())) {
 		OutputDebugString(L"decode device id failed");
-		return false;
+		//return false;
 	}
 
 	PropertiesData data;
@@ -187,14 +154,14 @@ bool CCameraDevice::UpdateVideoConfig(const SVideoConfig& videoConfig)
 	VideoDevice dev;
 	if (!data.GetDevice(dev, videoConfig.strVideoDeviceId.c_str())) {
 		OutputDebugString(L"get device failed");
-		return false;
+		//return false;
 	}
 	int cx = 0, cy = 0;
 	long long interval = 0;
 	VideoFormat format = VideoFormat::Any;
 
-	mVideoConfig.name = id.name;
-	mVideoConfig.path = id.path;
+	mVideoConfig.name = L"Integrated Camera";//id.name;
+	mVideoConfig.path = L"\\\\?\\usb#vid_13d3&pid_5271&mi_00#6&9b6b8ac&0&0000#{65e8773d-8f56-11d0-a3b9-00a0c9223196}\\global";//id.path;
 	mVideoConfig.useDefaultConfig = videoConfig.nResType == ResType_Preferred;
 	mVideoConfig.cx = cx;
 	mVideoConfig.cy_abs = abs(cy);
@@ -202,8 +169,8 @@ bool CCameraDevice::UpdateVideoConfig(const SVideoConfig& videoConfig)
 	mVideoConfig.frameInterval = interval;
 	mVideoConfig.internalFormat = format;
 
-	deviceHasAudio = dev.audioAttached;
-	deviceHasSeparateAudioFilter = dev.separateAudioFilter;
+	deviceHasAudio = false;//dev.audioAttached;
+	deviceHasSeparateAudioFilter = false;//dev.separateAudioFilter;
 
 	mVideoConfig.callback = std::bind(&CCameraDevice::OnVideoData, this,
 		std::placeholders::_1, std::placeholders::_2,
@@ -222,7 +189,7 @@ bool CCameraDevice::UpdateVideoConfig(const SVideoConfig& videoConfig)
 
 bool CCameraDevice::UpdateAudioConfig(const SAudioConfig& audioConfig)
 {
-	return false;
+	return true;
 }
 void CCameraDevice::OnReactivate()
 {
@@ -233,7 +200,9 @@ void CCameraDevice::OnVideoData(const VideoConfig& config, unsigned char* data,
 	size_t size, long long startTime,
 	long long endTime, long rotation) 
 {
-
+	if (mD3DApp) {
+		mD3DApp->DrawCamera(config, data, size, startTime, endTime, rotation);
+	}
 }
 
 void CCameraDevice::OnAudioData(const AudioConfig& config, unsigned char* data,
@@ -242,12 +211,16 @@ void CCameraDevice::OnAudioData(const AudioConfig& config, unsigned char* data,
 
 }
 
+void CCameraDevice::setD3DApp(InitDirect3DApp* d3dApp) {
+	mD3DApp = d3dApp;
+}
+
 bool DecodeDeviceId(DeviceId id, const char* cVideoDeviceId)
 {
 	if (cVideoDeviceId == nullptr) {
 		return false;
 	}
 	
-
+	
 	return true;
 }
