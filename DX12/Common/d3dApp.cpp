@@ -136,6 +136,13 @@ void D3DApp::CreateRtvAndDsvDescriptorHeaps()
 	dsvHeapDesc.NodeMask = 0;
     ThrowIfFailed(md3dDevice->CreateDescriptorHeap(
         &dsvHeapDesc, IID_PPV_ARGS(mDsvHeap.GetAddressOf())));
+
+	//10¡¢´´½¨SRV¶Ñ (Shader Resource View Heap)
+	D3D12_DESCRIPTOR_HEAP_DESC stSRVHeapDesc = {};
+	stSRVHeapDesc.NumDescriptors = 1;
+	stSRVHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
+	stSRVHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
+	ThrowIfFailed(md3dDevice->CreateDescriptorHeap(&stSRVHeapDesc, IID_PPV_ARGS(&mSrvHeap)));
 }
 
 void D3DApp::OnResize()
@@ -143,10 +150,19 @@ void D3DApp::OnResize()
 	assert(md3dDevice);
 	assert(mSwapChain);
     assert(mDirectCmdListAlloc);
+	mScreenViewport.TopLeftX = 0;
+	mScreenViewport.TopLeftY = 0;
+	mScreenViewport.Width = static_cast<float>(mClientWidth);
+	mScreenViewport.Height = static_cast<float>(mClientHeight);
+	mScreenViewport.MinDepth = 0.0f;
+	mScreenViewport.MaxDepth = 1.0f;
 
+	mScissorRect = { 0, 0, mClientWidth, mClientHeight };
 	// Flush before changing any resources.
+	return;
 	FlushCommandQueue();
 
+	ThrowIfFailed(mDirectCmdListAlloc->Reset());
     ThrowIfFailed(mCommandList->Reset(mDirectCmdListAlloc.Get(), nullptr));
 
 	// Release the previous resources we will be recreating.
