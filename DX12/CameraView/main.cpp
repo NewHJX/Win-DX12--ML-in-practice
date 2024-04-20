@@ -1,5 +1,6 @@
 #include "CameraView.h"
 #include "Triangle.h"
+#include "TextureRender.h"
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance,
 	PSTR cmdLine, int showCmd)
@@ -11,7 +12,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance,
 
 	try
 	{
-		Triangle theApp(hInstance);
+		TextureRender theApp(hInstance);
 		if (!theApp.Initialize())
 			return 0;
 		/*CCameraDevice cameraDev;

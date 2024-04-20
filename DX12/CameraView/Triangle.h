@@ -1,12 +1,6 @@
 #pragma once
 #include "../Common/d3dApp.h"
 
-struct VERTEX
-{
-	DirectX::XMFLOAT3 position;
-	DirectX::XMFLOAT4 color;
-};
-
 class Triangle :
     public D3DApp
 {

@@ -149,6 +149,7 @@
     <ClInclude Include="dshowcapture.hpp" />
     <ClInclude Include="IVideoCaptureFilter.h" />
     <ClInclude Include="log.hpp" />
+    <ClInclude Include="TextureRender.h" />
     <ClInclude Include="Triangle.h" />
   </ItemGroup>
   <ItemGroup>
@@ -172,10 +173,14 @@
     <ClCompile Include="includes\capture-device-support\Library\win\EGAVHIDImplementation.cpp" />
     <ClCompile Include="log.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="TextureRender.cpp" />
     <ClCompile Include="Triangle.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="shader1.hlsl">
+    <None Include="shaders\shader1.hlsl">
+      <FileType>Document</FileType>
+    </None>
+    <None Include="shaders\texturerender.hlsl">
       <FileType>Document</FileType>
     </None>
   </ItemGroup>
