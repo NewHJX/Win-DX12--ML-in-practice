@@ -182,7 +182,7 @@ void TextureRender::Draw(const GameTimer& gt)
 	mCommandQueue->ExecuteCommandLists(_countof(ppCommandLists), ppCommandLists);
 
 	//Ìá½»»­Ãæ
-	//ThrowIfFailed(mSwapChain->Present(1, 0));
+	ThrowIfFailed(mSwapChain->Present(1, 0));
 	//if (mSwapChain->Present(1, 0) != S_OK) {
 	//	HRESULT hr = md3dDevice->GetDeviceRemovedReason();
 	//	throw DxException(S_FALSE, L"", L"", 187);

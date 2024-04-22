@@ -84,6 +84,12 @@
     <ClInclude Include="TextureRender.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="TextureCube.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="DDSTextureLoader.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CameraView.cpp">
@@ -152,12 +158,21 @@
     <ClCompile Include="TextureRender.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="TextureCube.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="DDSTextureLoader.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\texturerender.hlsl">
       <Filter>shaders</Filter>
     </None>
     <None Include="shaders\shader1.hlsl">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="shaders\TextureCube.hlsl">
       <Filter>shaders</Filter>
     </None>
   </ItemGroup>

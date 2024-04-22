@@ -103,11 +103,15 @@
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <ConformanceMode>true</ConformanceMode>
+      <ConformanceMode>Default</ConformanceMode>
+      <AdditionalIncludeDirectories>includes/capture-device-support/Library;</AdditionalIncludeDirectories>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>strmiids.lib;winmm.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -138,6 +142,7 @@
     <ClInclude Include="capture-filter.hpp" />
     <ClInclude Include="ComPtr.hpp" />
     <ClInclude Include="CoTaskMemPtr.hpp" />
+    <ClInclude Include="DDSTextureLoader.h" />
     <ClInclude Include="device.hpp" />
     <ClInclude Include="DriverInterface.h" />
     <ClInclude Include="dshow-base.hpp" />
@@ -149,6 +154,7 @@
     <ClInclude Include="dshowcapture.hpp" />
     <ClInclude Include="IVideoCaptureFilter.h" />
     <ClInclude Include="log.hpp" />
+    <ClInclude Include="TextureCube.h" />
     <ClInclude Include="TextureRender.h" />
     <ClInclude Include="Triangle.h" />
   </ItemGroup>
@@ -158,6 +164,7 @@
     <ClCompile Include="..\Common\GameTimer.cpp" />
     <ClCompile Include="CameraView.cpp" />
     <ClCompile Include="capture-filter.cpp" />
+    <ClCompile Include="DDSTextureLoader.cpp" />
     <ClCompile Include="device-vendor.cpp" />
     <ClCompile Include="device.cpp" />
     <ClCompile Include="DriverInterface.cpp" />
@@ -173,6 +180,7 @@
     <ClCompile Include="includes\capture-device-support\Library\win\EGAVHIDImplementation.cpp" />
     <ClCompile Include="log.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="TextureCube.cpp" />
     <ClCompile Include="TextureRender.cpp" />
     <ClCompile Include="Triangle.cpp" />
   </ItemGroup>
@@ -181,6 +189,11 @@
       <FileType>Document</FileType>
     </None>
     <None Include="shaders\texturerender.hlsl">
+      <FileType>Document</FileType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="shaders\TextureCube.hlsl">
       <FileType>Document</FileType>
     </None>
   </ItemGroup>
