@@ -94,7 +94,7 @@ HRESULT Triangle::BuildShader()
 	UINT compileFlags = 0;
 #endif
 
-	TCHAR pszShaderFileName[] = L"D:\\TestProjects\\Win-DX12-ML-in-practice\\DX12\\CameraView\\shaders\\shader1.hlsl";
+	TCHAR pszShaderFileName[] = L"shaders\\shader1.hlsl";
 	ThrowIfFailed(D3DCompileFromFile(pszShaderFileName,
 		nullptr, nullptr, "VSMain", "vs_5_0",
 		compileFlags, 0, &mpVertexShader, nullptr));

@@ -253,7 +253,7 @@ HRESULT TextureRender::BuildShader()
 #else
 	UINT compileFlags = 0;
 #endif
-	TCHAR pszShaderFileName[] = (L"D:\\TestProjects\\Win-DX12-ML-in-practice\\DX12\\CameraView\\shaders\\texturerender.hlsl");
+	TCHAR pszShaderFileName[] = (L"shaders\\texturerender.hlsl");
 	ThrowIfFailed(D3DCompileFromFile(pszShaderFileName, nullptr, nullptr
 		, "VSMain", "vs_5_0", compileFlags, 0, &mpVertexShader, nullptr));
 	ThrowIfFailed(D3DCompileFromFile(pszShaderFileName, nullptr, nullptr
@@ -322,7 +322,7 @@ HRESULT TextureRender::LoadRenderData()
 	ThrowIfFailed(CoCreateInstance(CLSID_WICImagingFactory, nullptr, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&mpIWICFactory)));
 
 	//使用WIC类厂对象接口加载纹理图片，并得到一个WIC解码器对象接口，图片信息就在这个接口代表的对象中了
-	WCHAR* pszTexcuteFileName = (L"D:\\TestProjects\\Win-DX12-ML-in-practice\\DX12\\CameraView\\textures\\boy.jpg");
+	WCHAR* pszTexcuteFileName = (L"textures\\boy.jpg");
 	ThrowIfFailed(mpIWICFactory->CreateDecoderFromFilename(
 		pszTexcuteFileName,              // 文件名
 		NULL,                            // 不指定解码器，使用默认
