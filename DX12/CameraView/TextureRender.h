@@ -27,20 +27,23 @@ private:
 	HRESULT CreatePSO();
 	HRESULT LoadRenderData();
 private:
+	Microsoft::WRL::ComPtr<IWICBitmapFrameDecode>		mpIWICFrame;
+	Microsoft::WRL::ComPtr<IWICBitmapDecoder>			mpIWICDecoder;
+	Microsoft::WRL::ComPtr<IWICImagingFactory>			mpIWICFactory;
+
 	CD3DX12_ROOT_SIGNATURE_DESC							mRootSignatureDesc;
 	Microsoft::WRL::ComPtr<ID3D12RootSignature>         mpIRootSignature;
 	Microsoft::WRL::ComPtr<ID3DBlob>					mpVertexShader;
 	Microsoft::WRL::ComPtr<ID3DBlob>					mpPixelShader;
 	Microsoft::WRL::ComPtr<ID3D12PipelineState>			mPSO = nullptr;
 	Microsoft::WRL::ComPtr<ID3D12Resource>              mpIVertexBuffer;
+	Microsoft::WRL::ComPtr<ID3D12Resource>				mpITextureUpload;
+	Microsoft::WRL::ComPtr<ID3D12Resource>				mpITexcute;
 	D3D12_VERTEX_BUFFER_VIEW							mstVertexBufferView = {};
-	Microsoft::WRL::ComPtr<IWICImagingFactory>			mpIWICFactory;
-	Microsoft::WRL::ComPtr<IWICBitmapDecoder>			mpIWICDecoder;
-	Microsoft::WRL::ComPtr<IWICBitmapFrameDecode>		mpIWICFrame;
+	
 	UINT												mnTextureW = 0u;
 	UINT												mnTextureH = 0u;
 	UINT												mnBPP = 0u;
-	Microsoft::WRL::ComPtr<ID3D12Resource>				mpITexcute;
 	DXGI_FORMAT											mstTextureFormat = DXGI_FORMAT_UNKNOWN;
 	float												mfAspectRatio = 3.0f;
 

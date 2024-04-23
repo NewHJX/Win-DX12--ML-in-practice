@@ -1,4 +1,5 @@
 #include "TextureRender.h"
+#include "d3d12.h"
 
 #pragma comment(lib, "dxguid.lib")
 
@@ -123,11 +124,11 @@ DXGI_FORMAT GetDXGIFormatFromPixelFormat(const GUID* pPixelFormat)
 
 TextureRender::TextureRender(HINSTANCE hInstance) : D3DApp(hInstance)
 {
-
 }
 
 TextureRender::~TextureRender()
 {
+	
 }
 
 bool TextureRender::Initialize()
@@ -153,16 +154,15 @@ void TextureRender::Update(const GameTimer& gt)
 
 void TextureRender::Draw(const GameTimer& gt)
 {
-	ThrowIfFailed(mDirectCmdListAlloc->Reset());
+	//ThrowIfFailed(mDirectCmdListAlloc->Reset());
 	ThrowIfFailed(mCommandList->Reset(mDirectCmdListAlloc.Get(), mPSO.Get()));
 	mCommandList->SetGraphicsRootSignature(mpIRootSignature.Get());
-	//mCommandList->SetPipelineState(mPSO.Get());
-	mCommandList->RSSetViewports(1, &mScreenViewport);
-	mCommandList->RSSetScissorRects(1, &mScissorRect);
-	
 	ID3D12DescriptorHeap* ppHeaps[] = { mSrvHeap.Get() };
 	mCommandList->SetDescriptorHeaps(_countof(ppHeaps), ppHeaps);
 	mCommandList->SetGraphicsRootDescriptorTable(0, mSrvHeap->GetGPUDescriptorHandleForHeapStart());
+	mCommandList->RSSetViewports(1, &mScreenViewport);
+	mCommandList->RSSetScissorRects(1, &mScissorRect);
+	
 	mCommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(CurrentBackBuffer(),
 		D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET));
 
@@ -197,43 +197,79 @@ HRESULT TextureRender::CreateRootSig()
 	//11、创建根描述符
 	D3D12_FEATURE_DATA_ROOT_SIGNATURE stFeatureData = {};
 	// 检测是否支持V1.1版本的根签名
-	stFeatureData.HighestVersion = D3D_ROOT_SIGNATURE_VERSION_1_0;
+	stFeatureData.HighestVersion = D3D_ROOT_SIGNATURE_VERSION_1_1;
 	if (FAILED(md3dDevice->CheckFeatureSupport(D3D12_FEATURE_ROOT_SIGNATURE, &stFeatureData, sizeof(stFeatureData))))
 	{
 		stFeatureData.HighestVersion = D3D_ROOT_SIGNATURE_VERSION_1_0;
 	}
 	// 在GPU上执行SetGraphicsRootDescriptorTable后，我们不修改命令列表中的SRV，因此我们可以使用默认Rang行为:
 	// D3D12_DESCRIPTOR_RANGE_FLAG_DATA_STATIC_WHILE_SET_AT_EXECUTE
-	CD3DX12_DESCRIPTOR_RANGE stDSPRanges[1];
-	stDSPRanges[0].Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0, 0, D3D12_DESCRIPTOR_RANGE_FLAG_DATA_STATIC_WHILE_SET_AT_EXECUTE);
+	D3D12_DESCRIPTOR_RANGE1 stDSPRanges1[1] = {};
+	stDSPRanges1[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
+	stDSPRanges1[0].NumDescriptors = 1;
+	stDSPRanges1[0].BaseShaderRegister = 0;
+	stDSPRanges1[0].RegisterSpace = 0;
+	stDSPRanges1[0].Flags = D3D12_DESCRIPTOR_RANGE_FLAG_DATA_STATIC_WHILE_SET_AT_EXECUTE;
+	stDSPRanges1[0].OffsetInDescriptorsFromTableStart = 0;
 
-	CD3DX12_ROOT_PARAMETER stRootParameters[1];
-	stRootParameters[0].InitAsDescriptorTable(1, &stDSPRanges[0], D3D12_SHADER_VISIBILITY_PIXEL);
+	D3D12_ROOT_PARAMETER1 stRootParameters1[1] = {};
+	stRootParameters1[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+	stRootParameters1[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
+	stRootParameters1[0].DescriptorTable.NumDescriptorRanges = _countof(stDSPRanges1);
+	stRootParameters1[0].DescriptorTable.pDescriptorRanges = stDSPRanges1;
 
-	D3D12_STATIC_SAMPLER_DESC stSamplerDesc = {};
-	stSamplerDesc.Filter = D3D12_FILTER_MIN_MAG_MIP_POINT;
-	stSamplerDesc.AddressU = D3D12_TEXTURE_ADDRESS_MODE_BORDER;
-	stSamplerDesc.AddressV = D3D12_TEXTURE_ADDRESS_MODE_BORDER;
-	stSamplerDesc.AddressW = D3D12_TEXTURE_ADDRESS_MODE_BORDER;
-	stSamplerDesc.MipLODBias = 0;
-	stSamplerDesc.MaxAnisotropy = 0;
-	stSamplerDesc.ComparisonFunc = D3D12_COMPARISON_FUNC_NEVER;
-	stSamplerDesc.BorderColor = D3D12_STATIC_BORDER_COLOR_TRANSPARENT_BLACK;
-	stSamplerDesc.MinLOD = 0.0f;
-	stSamplerDesc.MaxLOD = D3D12_FLOAT32_MAX;
-	stSamplerDesc.ShaderRegister = 0;
-	stSamplerDesc.RegisterSpace = 0;
-	stSamplerDesc.ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
+	D3D12_STATIC_SAMPLER_DESC stSamplerDesc[1] = {};
+	stSamplerDesc[0].Filter = D3D12_FILTER_MIN_MAG_MIP_POINT;
+	stSamplerDesc[0].AddressU = D3D12_TEXTURE_ADDRESS_MODE_BORDER;
+	stSamplerDesc[0].AddressV = D3D12_TEXTURE_ADDRESS_MODE_BORDER;
+	stSamplerDesc[0].AddressW = D3D12_TEXTURE_ADDRESS_MODE_BORDER;
+	stSamplerDesc[0].MipLODBias = 0;
+	stSamplerDesc[0].MaxAnisotropy = 0;
+	stSamplerDesc[0].ComparisonFunc = D3D12_COMPARISON_FUNC_NEVER;
+	stSamplerDesc[0].BorderColor = D3D12_STATIC_BORDER_COLOR_TRANSPARENT_BLACK;
+	stSamplerDesc[0].MinLOD = 0.0f;
+	stSamplerDesc[0].MaxLOD = D3D12_FLOAT32_MAX;
+	stSamplerDesc[0].ShaderRegister = 0;
+	stSamplerDesc[0].RegisterSpace = 0;
+	stSamplerDesc[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
+
+	D3D12_VERSIONED_ROOT_SIGNATURE_DESC stRootSignatureDesc = {};
 	
-	CD3DX12_ROOT_SIGNATURE_DESC stRootSignatureDesc;
-	stRootSignatureDesc.Init(_countof(stRootParameters), stRootParameters
-		, 1, &stSamplerDesc
-		, D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
+	if (D3D_ROOT_SIGNATURE_VERSION_1_1 == stFeatureData.HighestVersion)
+	{
+		stRootSignatureDesc.Version = D3D_ROOT_SIGNATURE_VERSION_1_1;
+		stRootSignatureDesc.Desc_1_1.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
+		stRootSignatureDesc.Desc_1_1.NumParameters = _countof(stRootParameters1);
+		stRootSignatureDesc.Desc_1_1.pParameters = stRootParameters1;
+		stRootSignatureDesc.Desc_1_1.NumStaticSamplers = _countof(stSamplerDesc);
+		stRootSignatureDesc.Desc_1_1.pStaticSamplers = stSamplerDesc;
+	}
+	else
+	{
+		D3D12_DESCRIPTOR_RANGE stDSPRanges[1] = {};
+		stDSPRanges[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
+		stDSPRanges[0].NumDescriptors = 1;
+		stDSPRanges[0].BaseShaderRegister = 0;
+		stDSPRanges[0].RegisterSpace = 0;
+		stDSPRanges[0].OffsetInDescriptorsFromTableStart = 0;
+
+		D3D12_ROOT_PARAMETER stRootParameters[1] = {};
+		stRootParameters[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+		stRootParameters[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
+		stRootParameters[0].DescriptorTable.NumDescriptorRanges = _countof(stDSPRanges);
+		stRootParameters[0].DescriptorTable.pDescriptorRanges = stDSPRanges;
+
+		stRootSignatureDesc.Version = D3D_ROOT_SIGNATURE_VERSION_1_0;
+		stRootSignatureDesc.Desc_1_0.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
+		stRootSignatureDesc.Desc_1_0.NumParameters = _countof(stRootParameters);
+		stRootSignatureDesc.Desc_1_0.pParameters = stRootParameters;
+		stRootSignatureDesc.Desc_1_0.NumStaticSamplers = _countof(stSamplerDesc);
+		stRootSignatureDesc.Desc_1_0.pStaticSamplers = stSamplerDesc;
+	}
 
 	Microsoft::WRL::ComPtr<ID3DBlob> pISignatureBlob;
 	Microsoft::WRL::ComPtr<ID3DBlob> pIErrorBlob;
-	ThrowIfFailed(D3D12SerializeRootSignature(&stRootSignatureDesc
-		, stFeatureData.HighestVersion
+	ThrowIfFailed(D3D12SerializeVersionedRootSignature(&stRootSignatureDesc
 		, &pISignatureBlob
 		, &pIErrorBlob));
 	ThrowIfFailed(md3dDevice->CreateRootSignature(0
@@ -406,8 +442,6 @@ HRESULT TextureRender::LoadRenderData()
 	UINT nPicRowPitch = (uint64_t(mnTextureW) * uint64_t(mnBPP) + 7u) / 8u;
 	//---------------------------------------------------------------------------------------------
 
-	Microsoft::WRL::ComPtr<ID3D12Resource> pITextureUpload;
-
 	D3D12_RESOURCE_DESC stTextureDesc = {};
 	stTextureDesc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;
 	stTextureDesc.MipLevels = 1;
@@ -432,7 +466,9 @@ HRESULT TextureRender::LoadRenderData()
 		, IID_PPV_ARGS(&mpITexcute)));
 
 	//获取上传堆资源缓冲的大小，这个尺寸通常大于实际图片的尺寸
-	const UINT64 n64UploadBufferSize = GetRequiredIntermediateSize(mpITexcute.Get(), 0, 1);
+	UINT64 n64UploadBufferSize = 0;
+	D3D12_RESOURCE_DESC stDestDesc = mpITexcute->GetDesc();
+	md3dDevice->GetCopyableFootprints(&stDestDesc, 0, 1, 0, nullptr, nullptr, nullptr, &n64UploadBufferSize);
 
 	// 创建用于上传纹理的资源,注意其类型是Buffer
 	// 上传堆对于GPU访问来说性能是很差的，
@@ -444,7 +480,7 @@ HRESULT TextureRender::LoadRenderData()
 		&CD3DX12_RESOURCE_DESC::Buffer(n64UploadBufferSize),
 		D3D12_RESOURCE_STATE_GENERIC_READ,
 		nullptr,
-		IID_PPV_ARGS(&pITextureUpload)));
+		IID_PPV_ARGS(&mpITextureUpload)));
 
 	//按照资源缓冲大小来分配实际图片数据存储的内存大小
 	void* pbPicData = ::HeapAlloc(::GetProcessHeap(), HEAP_ZERO_MEMORY, n64UploadBufferSize);
@@ -501,7 +537,7 @@ HRESULT TextureRender::LoadRenderData()
 	UINT64 n64TextureRowSizes = 0u;
 	UINT   nTextureRowNum = 0u;
 
-	D3D12_RESOURCE_DESC stDestDesc = mpITexcute->GetDesc();
+	stDestDesc = mpITexcute->GetDesc();
 
 	md3dDevice->GetCopyableFootprints(&stDestDesc
 		, 0
@@ -518,7 +554,7 @@ HRESULT TextureRender::LoadRenderData()
 	//需要注意的是之所以按行拷贝是因为GPU资源的行大小
 	//与实际图片的行大小是有差异的,二者的内存边界对齐要求是不一样的
 	BYTE* pData = nullptr;
-	ThrowIfFailed(pITextureUpload->Map(0, NULL, reinterpret_cast<void**>(&pData)));
+	ThrowIfFailed(mpITextureUpload->Map(0, NULL, reinterpret_cast<void**>(&pData)));
 
 	BYTE* pDestSlice = reinterpret_cast<BYTE*>(pData) + stTxtLayouts.Offset;
 	const BYTE* pSrcSlice = reinterpret_cast<const BYTE*>(pbPicData);
@@ -531,14 +567,14 @@ HRESULT TextureRender::LoadRenderData()
 	//取消映射 对于易变的数据如每帧的变换矩阵等数据，可以撒懒不用Unmap了，
 	//让它常驻内存,以提高整体性能，因为每次Map和Unmap是很耗时的操作
 	//因为现在起码都是64位系统和应用了，地址空间是足够的，被长期占用不会影响什么
-	pITextureUpload->Unmap(0, NULL);
+	mpITextureUpload->Unmap(0, NULL);
 
 	//释放图片数据，做一个干净的程序员
 	::HeapFree(::GetProcessHeap(), 0, pbPicData);
 
 	//向命令队列发出从上传堆复制纹理数据到默认堆的命令
 	CD3DX12_TEXTURE_COPY_LOCATION Dst(mpITexcute.Get(), 0);
-	CD3DX12_TEXTURE_COPY_LOCATION Src(pITextureUpload.Get(), stTxtLayouts);
+	CD3DX12_TEXTURE_COPY_LOCATION Src(mpITextureUpload.Get(), stTxtLayouts);
 	ThrowIfFailed(mDirectCmdListAlloc->Reset());
 	ThrowIfFailed(mCommandList->Reset(mDirectCmdListAlloc.Get(), mPSO.Get()));
 	mCommandList->CopyTextureRegion(&Dst, 0, 0, 0, &Src, nullptr);
