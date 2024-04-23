@@ -24,6 +24,8 @@ private:
 	Microsoft::WRL::ComPtr<ID3D12PipelineState>			mPSO = nullptr;
 	Microsoft::WRL::ComPtr<ID3D12Resource>              mpIVertexBuffer;
 	D3D12_VERTEX_BUFFER_VIEW							mstVertexBufferView = {};
+	Microsoft::WRL::ComPtr<ID3D12Resource>              mpIIndexBuffer;
+	D3D12_INDEX_BUFFER_VIEW								mstIndexBufferView = {};
 	float												mfAspectRatio = 3.0f;
 
 };
