@@ -581,7 +581,7 @@ HRESULT TextureRender::LoadRenderData()
 	//设置一个资源屏障，同步并确认复制操作完成
 		//直接使用结构体然后调用的形式
 	D3D12_RESOURCE_BARRIER stResBar = {};
-	stResBar.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+	stResBar.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION; 
 	stResBar.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
 	stResBar.Transition.pResource = mpITexcute.Get();
 	stResBar.Transition.StateBefore = D3D12_RESOURCE_STATE_COPY_DEST;
