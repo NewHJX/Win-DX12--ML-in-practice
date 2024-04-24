@@ -1,6 +1,5 @@
 #pragma once
 #include "../Common/d3dApp.h"
-#include <wincodec.h>
 
 struct VERTEX_TEX
 {

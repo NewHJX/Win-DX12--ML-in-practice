@@ -129,17 +129,17 @@ void D3DApp::CreateRtvAndDsvDescriptorHeaps()
         &rtvHeapDesc, IID_PPV_ARGS(mRtvHeap.GetAddressOf())));
 
 
-    D3D12_DESCRIPTOR_HEAP_DESC dsvHeapDesc;
-    dsvHeapDesc.NumDescriptors = 1;
-    dsvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_DSV;
-    dsvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
-	dsvHeapDesc.NodeMask = 0;
-    ThrowIfFailed(md3dDevice->CreateDescriptorHeap(
-        &dsvHeapDesc, IID_PPV_ARGS(mDsvHeap.GetAddressOf())));
+ //   D3D12_DESCRIPTOR_HEAP_DESC dsvHeapDesc;
+ //   dsvHeapDesc.NumDescriptors = 1;
+ //   dsvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_DSV;
+ //   dsvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
+	//dsvHeapDesc.NodeMask = 0;
+ //   ThrowIfFailed(md3dDevice->CreateDescriptorHeap(
+ //       &dsvHeapDesc, IID_PPV_ARGS(mDsvHeap.GetAddressOf())));
 
 	//10¡¢´´½¨SRV¶Ñ (Shader Resource View Heap)
 	D3D12_DESCRIPTOR_HEAP_DESC stSRVHeapDesc = {};
-	stSRVHeapDesc.NumDescriptors = 1;
+	stSRVHeapDesc.NumDescriptors = 2;
 	stSRVHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
 	stSRVHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
 	ThrowIfFailed(md3dDevice->CreateDescriptorHeap(&stSRVHeapDesc, IID_PPV_ARGS(&mSrvHeap)));
@@ -217,8 +217,10 @@ void D3DApp::OnResize()
 	dsvDesc.ViewDimension = D3D12_DSV_DIMENSION_TEXTURE2D;
 	dsvDesc.Format = mDepthStencilFormat;
 	dsvDesc.Texture2D.MipSlice = 0;
-    md3dDevice->CreateDepthStencilView(mDepthStencilBuffer.Get(), &dsvDesc, DepthStencilView());
 
+	if (mDsvHeap) {
+		md3dDevice->CreateDepthStencilView(mDepthStencilBuffer.Get(), &dsvDesc, DepthStencilView());
+	}
     // Transition the resource from its initial state to be used as a depth buffer.
 	mCommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(mDepthStencilBuffer.Get(),
 		D3D12_RESOURCE_STATE_COMMON, D3D12_RESOURCE_STATE_DEPTH_WRITE));

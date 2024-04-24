@@ -28,6 +28,7 @@
 #include "d3dx12.h"
 #include "DDSTextureLoader.h"
 #include "MathHelper.h"
+#include <wincodec.h>
 
 extern const int gNumFrameResources;
 
@@ -59,6 +60,10 @@ inline std::wstring AnsiToWString(const std::string& str)
     MultiByteToWideChar(CP_ACP, 0, str.c_str(), -1, buffer, 512);
     return std::wstring(buffer);
 }
+
+bool GetTargetPixelFormat(const GUID* pSourceFormat, GUID* pTargetFormat);
+
+DXGI_FORMAT GetDXGIFormatFromPixelFormat(const GUID* pPixelFormat);
 
 /*
 #if defined(_DEBUG)
