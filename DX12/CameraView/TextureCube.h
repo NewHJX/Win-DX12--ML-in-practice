@@ -59,6 +59,9 @@ private:
 	DXGI_FORMAT											mstTextureFormat = DXGI_FORMAT_UNKNOWN;
 
 	ST_FRAME_MVP_BUFFER*								mpMVPBuffer = nullptr;
+
+	ULONGLONG											mn64tmFrameStart = 0;
+	ULONGLONG											mn64tmCurrent = 0;
 	//初始的默认摄像机的位置
 	DirectX::XMVECTOR Eye = DirectX::XMVectorSet(0.0f, 0.0f, -10.0f, 0.0f); //眼睛位置
 	DirectX::XMVECTOR At = DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);    //眼睛所盯的位置

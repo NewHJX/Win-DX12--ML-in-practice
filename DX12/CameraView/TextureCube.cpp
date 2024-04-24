@@ -31,6 +31,8 @@ bool TextureCube::Initialize()
 	ThrowIfFailed(CreatePSO());
 	ThrowIfFailed(LoadRenderData());
 	ThrowIfFailed(CreateOthers());
+	mn64tmFrameStart = ::GetTickCount64();
+	mn64tmCurrent = mn64tmFrameStart;
 	return true;
 }
 
@@ -45,16 +47,14 @@ void TextureCube::Update(const GameTimer& gt)
 
 void TextureCube::Draw(const GameTimer& gt)
 {
-	ULONGLONG n64tmFrameStart = ::GetTickCount64();
-	ULONGLONG n64tmCurrent = n64tmFrameStart;
-	n64tmCurrent = ::GetTickCount();
+	mn64tmCurrent = ::GetTickCount();
 
 	ThrowIfFailed(mCommandList->Reset(mDirectCmdListAlloc.Get(), mPSO.Get()));
 	//计算旋转的角度：旋转角度(弧度) = 时间(秒) * 角速度(弧度/秒)
 	//下面这句代码相当于经典游戏消息循环中的OnUpdate函数中需要做的事情
-	mdModelRotationYAngle += ((n64tmCurrent - n64tmFrameStart) / 1000.0f) * fPalstance;
+	mdModelRotationYAngle += ((mn64tmCurrent - mn64tmFrameStart) / 1000.0f) * fPalstance;
 
-	n64tmFrameStart = n64tmCurrent;
+	mn64tmFrameStart = mn64tmCurrent;
 
 	//旋转角度是2PI周期的倍数，去掉周期数，只留下相对0弧度开始的小于2PI的弧度即可
 	if (mdModelRotationYAngle > DirectX::XM_2PI)
@@ -238,25 +238,31 @@ HRESULT TextureCube::CreatePSO()
 		{ "NORMAL", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 20, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 }
 	};
 
-	D3D12_GRAPHICS_PIPELINE_STATE_DESC psoDesc = {};
-	psoDesc.InputLayout = { inputElementDescs,_countof(inputElementDescs) };
-	psoDesc.pRootSignature = mpIRootSignature.Get();
-	psoDesc.VS = { reinterpret_cast<BYTE*>(mpVertexShader->GetBufferPointer()),
-	mpVertexShader->GetBufferSize() };
-	psoDesc.PS = { reinterpret_cast<BYTE*>(mpPixelShader->GetBufferPointer()),
-	mpPixelShader->GetBufferSize() };
+	// 创建 graphics pipeline state object (PSO)对象
+	D3D12_GRAPHICS_PIPELINE_STATE_DESC stPSODesc = {};
+	stPSODesc.InputLayout = { inputElementDescs, _countof(inputElementDescs) };
 
-	psoDesc.RasterizerState = CD3DX12_RASTERIZER_DESC(D3D12_DEFAULT);
-	psoDesc.BlendState = CD3DX12_BLEND_DESC(D3D12_DEFAULT);
-	psoDesc.DepthStencilState = CD3DX12_DEPTH_STENCIL_DESC(D3D12_DEFAULT);
-	psoDesc.SampleMask = UINT_MAX;
-	psoDesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
-	psoDesc.NumRenderTargets = 1; // 同时所用的渲染目标数量(即 RTVFormats 数组中渲染目标格式的数量)
-	psoDesc.RTVFormats[0] = mBackBufferFormat; // 渲染目标的格式
-	psoDesc.SampleDesc.Count = m4xMsaaState ? 4 : 1;
-	psoDesc.SampleDesc.Quality = m4xMsaaState ? (m4xMsaaQuality - 1) : 0;
-	psoDesc.DSVFormat = mDepthStencilFormat;
-	ThrowIfFailed(md3dDevice->CreateGraphicsPipelineState(&psoDesc, IID_PPV_ARGS(&mPSO)));
+	stPSODesc.pRootSignature = mpIRootSignature.Get();
+	stPSODesc.VS.BytecodeLength = mpVertexShader->GetBufferSize();
+	stPSODesc.VS.pShaderBytecode = mpVertexShader->GetBufferPointer();
+	stPSODesc.PS.BytecodeLength = mpPixelShader->GetBufferSize();
+	stPSODesc.PS.pShaderBytecode = mpPixelShader->GetBufferPointer();
+
+	stPSODesc.RasterizerState.FillMode = D3D12_FILL_MODE_SOLID;
+	stPSODesc.RasterizerState.CullMode = D3D12_CULL_MODE_BACK;
+
+	stPSODesc.BlendState.AlphaToCoverageEnable = FALSE;
+	stPSODesc.BlendState.IndependentBlendEnable = FALSE;
+	stPSODesc.BlendState.RenderTarget[0].RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
+
+	stPSODesc.DepthStencilState.DepthEnable = FALSE;
+	stPSODesc.DepthStencilState.StencilEnable = FALSE;
+	stPSODesc.SampleMask = UINT_MAX;
+	stPSODesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
+	stPSODesc.NumRenderTargets = 1;
+	stPSODesc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
+	stPSODesc.SampleDesc.Count = 1;
+	ThrowIfFailed(md3dDevice->CreateGraphicsPipelineState(&stPSODesc, IID_PPV_ARGS(&mPSO)));
 	return S_OK;
 }
 
@@ -665,7 +671,7 @@ HRESULT TextureCube::LoadRenderData()
 
 	const UINT vertexBufferSize = sizeof(triangleVertices);
 
-	std::uint16_t indices[] = {
+	UINT32 indices[] = {
 		0,1,2,
 		3,4,5,
 
