@@ -143,6 +143,7 @@
     <ClInclude Include="ComPtr.hpp" />
     <ClInclude Include="CoTaskMemPtr.hpp" />
     <ClInclude Include="DDSTextureLoader.h" />
+    <ClInclude Include="DDSTextureSky.h" />
     <ClInclude Include="device.hpp" />
     <ClInclude Include="DriverInterface.h" />
     <ClInclude Include="dshow-base.hpp" />
@@ -165,6 +166,7 @@
     <ClCompile Include="CameraView.cpp" />
     <ClCompile Include="capture-filter.cpp" />
     <ClCompile Include="DDSTextureLoader.cpp" />
+    <ClCompile Include="DDSTextureSky.cpp" />
     <ClCompile Include="device-vendor.cpp" />
     <ClCompile Include="device.cpp" />
     <ClCompile Include="DriverInterface.cpp" />
@@ -194,6 +196,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\TextureCube.hlsl">
+      <FileType>Document</FileType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="shaders\SkyBox.hlsl">
       <FileType>Document</FileType>
     </None>
   </ItemGroup>

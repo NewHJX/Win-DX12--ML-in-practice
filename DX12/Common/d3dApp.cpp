@@ -129,13 +129,13 @@ void D3DApp::CreateRtvAndDsvDescriptorHeaps()
         &rtvHeapDesc, IID_PPV_ARGS(mRtvHeap.GetAddressOf())));
 
 
- //   D3D12_DESCRIPTOR_HEAP_DESC dsvHeapDesc;
- //   dsvHeapDesc.NumDescriptors = 1;
- //   dsvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_DSV;
- //   dsvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
-	//dsvHeapDesc.NodeMask = 0;
- //   ThrowIfFailed(md3dDevice->CreateDescriptorHeap(
- //       &dsvHeapDesc, IID_PPV_ARGS(mDsvHeap.GetAddressOf())));
+    D3D12_DESCRIPTOR_HEAP_DESC dsvHeapDesc;
+    dsvHeapDesc.NumDescriptors = 1;
+    dsvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_DSV;
+    dsvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
+	dsvHeapDesc.NodeMask = 0;
+    ThrowIfFailed(md3dDevice->CreateDescriptorHeap(
+        &dsvHeapDesc, IID_PPV_ARGS(mDsvHeap.GetAddressOf())));
 
 	//10¡¢´´½¨SRV¶Ñ (Shader Resource View Heap)
 	D3D12_DESCRIPTOR_HEAP_DESC stSRVHeapDesc = {};

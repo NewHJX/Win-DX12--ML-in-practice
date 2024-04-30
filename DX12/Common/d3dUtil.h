@@ -32,6 +32,10 @@
 
 extern const int gNumFrameResources;
 
+#define TEX_UPPER(A,B) ((UINT)(((A)+((B)-1))&~(B - 1)))
+
+#define TEX_UPPER_DIV(A,B) ((UINT)(((A)+((B)-1))/(B)))
+
 inline void d3dSetDebugName(IDXGIObject* obj, const char* name)
 {
     if(obj)

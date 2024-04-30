@@ -8,10 +8,6 @@ struct VERTEX
 	DirectX::XMFLOAT3 m_vNor;		//Normal
 };
 
-#define TEX_UPPER(A,B) ((UINT)(((A)+((B)-1))&~(B - 1)))
-
-#define TEX_UPPER_DIV(A,B) ((UINT)(((A)+((B)-1))/(B)))
-
 TextureCube::TextureCube(HINSTANCE hInstance) : D3DApp(hInstance)
 {
 
