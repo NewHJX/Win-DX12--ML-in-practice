@@ -59,9 +59,21 @@ private:
 	Microsoft::WRL::ComPtr<ID3D12Resource>				mpITexture;
 	Microsoft::WRL::ComPtr<ID3D12Resource>				mpITextureUpload;
 	Microsoft::WRL::ComPtr<ID3D12Resource>			    mpICBVUpload;
+	ComPtr<ID3D12Resource>								mpIVBSkybox;
+
+	Microsoft::WRL::ComPtr<ID3D12Resource>				mpITextureEarth;
+	Microsoft::WRL::ComPtr<ID3D12Resource>				mpITextureUploadEarth;
+	Microsoft::WRL::ComPtr<ID3D12Resource>			    mpICBVUploadEarth;
+	ComPtr<ID3D12Resource>								mpIVBEarth;
+	ComPtr<ID3D12Resource>								mpIIBEarth;
+
+	D3D12_VERTEX_BUFFER_VIEW							mstVBVEarth = {};
+	D3D12_INDEX_BUFFER_VIEW								mstIBVEarth = {};
 
 	ComPtr<IWICBitmapSource>							mpIBMPEarth;
-	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap>		mpISamplerDescriptorHeap;
+	ComPtr<ID3D12DescriptorHeap>						mpISRVHpEarth;
+	ComPtr<ID3D12DescriptorHeap>						mpISampleHpEarth;
+	ComPtr<ID3D12DescriptorHeap>						mpISamplerDescriptorHeap;
 	D3D12_RESOURCE_DESC									mstTextureDesc = {};
 	UINT												mnSampleMaxCnt = 5;		//创建五个典型的采样器
 	UINT												mnSamplerDescriptorSize = 0;
@@ -74,14 +86,29 @@ private:
 	UINT												mnRowPitchEarth = 0u;
 	UINT												mnCurrentSamplerNO = 0;
 	UINT64												mn64UploadBufferSize = 0;
+	UINT64												mn64UploadBufferSizeEarth = 0;
 	DXGI_FORMAT											mstTextureFormat = DXGI_FORMAT_UNKNOWN;
 	DXGI_FORMAT											mstTxtFmtEarth = DXGI_FORMAT_UNKNOWN;
+
+	VERTEX*												mpstSphereVertices = nullptr;
+	UINT*												mpSphereIndices = nullptr;
+	//加载Skybox的Cube Map需要的变量
+	std::unique_ptr<uint8_t[]>							ddsData;
+	std::vector<D3D12_SUBRESOURCE_DATA>					arSubResources;
+	DDS_ALPHA_MODE										emAlphaMode = DDS_ALPHA_MODE_UNKNOWN;
+	bool												bIsCube = false;
+
+	ComPtr<ID3D12Heap>									mpIRESHeapEarth;
+	ComPtr<ID3D12Heap>									mpIUploadHeapEarth;
+	ComPtr<ID3D12Heap>									mpIRESHeapSkybox;
+	ComPtr<ID3D12Heap>									mpIUploadHeapSkybox;
 
 	ComPtr<ID3D12CommandAllocator>						mpICmdAllocSkybox;
 	ComPtr<ID3D12CommandAllocator>						mpICmdAllocEarth;
 	ComPtr<ID3D12GraphicsCommandList>					mpIBundlesSkybox;
 	ComPtr<ID3D12GraphicsCommandList>					mpIBundlesEarth;
 	ST_FRAME_MVP_BUFFER*								mpMVPBuffer = nullptr;
+	ST_FRAME_MVP_BUFFER*								mpMVPBufferEarth = nullptr;
 
 	ULONGLONG											mn64tmFrameStart = 0;
 	ULONGLONG											mn64tmCurrent = 0;

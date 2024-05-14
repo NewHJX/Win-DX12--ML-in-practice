@@ -36,6 +36,10 @@ extern const int gNumFrameResources;
 
 #define TEX_UPPER_DIV(A,B) ((UINT)(((A)+((B)-1))/(B)))
 
+#define TEX_CALLOC(sz)		::HeapAlloc(GetProcessHeap(),HEAP_ZERO_MEMORY,(sz))
+
+#define SAFE_FREE(p)		if( nullptr != (p) ){ ::HeapFree( ::GetProcessHeap(),0,(p) ); (p) = nullptr; }
+
 inline void d3dSetDebugName(IDXGIObject* obj, const char* name)
 {
     if(obj)
